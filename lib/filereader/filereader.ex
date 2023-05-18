@@ -18,10 +18,31 @@ defmodule Filereader do
         command_name == "rotate" -> parse_rotate(scene_builder_pid, command)
         command_name == "pushTransform" -> SceneBuilder.push_transform(scene_builder_pid)
         command_name == "popTransform" -> SceneBuilder.pop_transform(scene_builder_pid)
+        command_name == "diffuse" -> parse_color(scene_builder_pid, command, :diffuse)
+        command_name == "ambient" -> parse_color(scene_builder_pid, command, :ambient)
+        command_name == "emission" -> parse_color(scene_builder_pid, command, :emission)
+        command_name == "specular" -> parse_color(scene_builder_pid, command, :specular)
+        command_name == "shininess" -> parse_shininess(scene_builder_pid, command, :shininess)
         true -> "Command not understood"
       end
     end
     :sys.get_state(scene_builder_pid)
+  end
+
+  defp parse_shininess(scene_builder_pid, command, material) do
+    shininess = elem(Float.parse(Enum.at(command, 1)), 0)
+    SceneBuilder.set_material(scene_builder_pid, shininess, material)
+  end
+
+  defp parse_color(scene_builder_pid, command, material) do
+    color = Color.from(
+      {
+        elem(Float.parse(Enum.at(command, 1)), 0),
+        elem(Float.parse(Enum.at(command, 2)), 0),
+        elem(Float.parse(Enum.at(command, 3)), 0)
+      }
+    )
+    SceneBuilder.set_material(scene_builder_pid, color, material)
   end
 
   defp parse_rotate(scene_builder_pid, command) do

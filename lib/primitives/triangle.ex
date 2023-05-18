@@ -1,5 +1,6 @@
 defmodule Primitives.Triangle do
-  defstruct a: Graphmath.Vec3.create(), b: Graphmath.Vec3.create(), c: Graphmath.Vec3.create(), normal: Graphmath.Vec3.create()
+  defstruct a: Graphmath.Vec3.create(), b: Graphmath.Vec3.create(), c: Graphmath.Vec3.create(), normal: Graphmath.Vec3.create(),
+  materials: %{diffuse: Color.create(), emission: Color.create(), shininess: 0.0, specular: Color.create(), ambient: Color.create()}
 
   @spec from({float, float, float}, {float, float, float}, {float, float, float}) ::
           %Primitives.Triangle{

@@ -1,6 +1,7 @@
 defmodule SceneBuilder do
   use GenServer
-  defstruct width: 640, height: 480, camera: 6000, filename: "default.png", maxdepth: 1, triangles: [], spheres: [], transformation_stack: [Graphmath.Mat44.identity()]
+  defstruct width: 640, height: 480, camera: 6000, filename: "default.png", maxdepth: 1, triangles: [], spheres: [], transformation_stack: [Graphmath.Mat44.identity()],
+  materials: %{diffuse: Color.create(), emission: Color.create(), shininess: 0.0, specular: Color.create(), ambient: Color.create()}
 
   def init(scene) do
     {:ok, scene}
@@ -16,6 +17,10 @@ defmodule SceneBuilder do
 
   def set_output(pid, output) do
     GenServer.call(pid, {:set_output, output})
+  end
+
+  def set_material(pid, color, material) do
+    GenServer.call(pid, {:set_material, material, color})
   end
 
   def apply_transform(pid, transform) do
@@ -37,6 +42,11 @@ defmodule SceneBuilder do
 
   def handle_call({:set_resolution, width, height}, _from, state) do
     {:reply, state, %{state | width: width, height: height}}
+  end
+
+  def handle_call({:set_material, material, color}, _from, state) do
+    new_materials = Map.replace(state.materials, material, color)
+    {:reply, state, %{state | materials: new_materials}}
   end
 
   def handle_call({:set_output, output}, _from, state) do

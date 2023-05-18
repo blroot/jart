@@ -74,4 +74,23 @@ defmodule JartTest.Filereader do
       Graphmath.Mat44.make_translate(-0.4, 0.0, 0.5)
     ]
   end
+
+  test "materials can be parsed" do
+    commands = [
+      "diffuse 0 0.2 0",
+      "specular 0 1 0",
+      "ambient 1 0 0",
+      "shininess 70",
+      "emission 1 0 0"
+    ]
+    assert Filereader.read(commands) == %SceneBuilder{
+      materials: %{
+        diffuse: Color.from(Graphmath.Vec3.create(0.0, 0.2, 0.0)),
+        ambient: Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
+        emission: Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
+        specular: Color.from(Graphmath.Vec3.create(0.0, 1.0, 0.0)),
+        shininess: 70.0
+      }
+    }
+  end
 end
