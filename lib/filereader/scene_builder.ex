@@ -10,6 +10,10 @@ defmodule SceneBuilder do
     GenServer.call(pid, {:add_triangle, triangle})
   end
 
+  def add_sphere(pid, sphere) do
+    GenServer.call(pid, {:add_sphere, sphere})
+  end
+
   def set_resolution(pid, width, height) do
     GenServer.call(pid, {:set_resolution, width, height})
   end
@@ -37,6 +41,11 @@ defmodule SceneBuilder do
   def handle_call({:add_triangle, triangle}, _from, state) do
     new_triangles = state.triangles ++ [triangle]
     {:reply, state, %{state | triangles: new_triangles}}
+  end
+
+  def handle_call({:add_sphere, sphere}, _from, state) do
+    new_spheres = state.spheres ++ [sphere]
+    {:reply, state, %{state | spheres: new_spheres}}
   end
 
   def handle_call({:set_resolution, width, height}, _from, state) do

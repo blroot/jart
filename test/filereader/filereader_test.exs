@@ -122,4 +122,30 @@ defmodule JartTest.Filereader do
         )
       ]
   end
+
+  test "sphere has parsed materials" do
+    commands = [
+      "diffuse 0 0.2 0",
+      "specular 0 1 0",
+      "ambient 1 0 0",
+      "shininess 70",
+      "emission 1 0 0",
+      "sphere 0 0 0 0.7",
+    ]
+    materials = Materials.from(
+      Color.from(Graphmath.Vec3.create(0.0, 0.2, 0.0)),
+      Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
+      70.0,
+      Color.from(Graphmath.Vec3.create(0.0, 1.0, 0.0)),
+      Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0))
+    )
+    assert Filereader.read(commands).spheres == [
+      Primitives.Sphere.from(
+        Graphmath.Vec3.create(0.0, 0.0, 0.0),
+        0.7,
+        Graphmath.Mat44.identity(),
+        materials
+      )
+    ]
+  end
 end

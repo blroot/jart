@@ -1,12 +1,13 @@
 defmodule Primitives.Sphere do
   defstruct center: Graphmath.Vec3.create(), radius: 0.0, transform: Graphmath.Mat44.identity(), inverse_transform: Graphmath.Mat44.inverse(Graphmath.Mat44.identity()), materials: Materials.from()
 
-  def from(center, radius, transform) do
+  def from(center, radius, transform, materials \\ Materials.from()) do
     %Primitives.Sphere{
       center: center,
       radius: radius,
       transform: transform,
-      inverse_transform: Graphmath.Mat44.inverse(transform)
+      inverse_transform: Graphmath.Mat44.inverse(transform),
+      materials: materials
     }
   end
 

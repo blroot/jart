@@ -23,6 +23,7 @@ defmodule Filereader do
         command_name == "emission" -> parse_color(scene_builder_pid, command, :emission)
         command_name == "specular" -> parse_color(scene_builder_pid, command, :specular)
         command_name == "shininess" -> parse_shininess(scene_builder_pid, command, :shininess)
+        command_name == "sphere" -> parse_sphere(scene_builder_pid, command)
         true -> "Command not understood"
       end
     end
@@ -112,6 +113,21 @@ defmodule Filereader do
         VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 2))),
         VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 3))),
         :sys.get_state(scene_pid).materials
+      )
+    )
+  end
+
+  defp parse_sphere(scene_builder_pid, command) do
+    SceneBuilder.add_sphere(
+      scene_builder_pid, Primitives.Sphere.from(
+        Graphmath.Vec3.create(
+          elem(Float.parse(Enum.at(command, 1)), 0),
+          elem(Float.parse(Enum.at(command, 2)), 0),
+          elem(Float.parse(Enum.at(command, 3)), 0)
+        ),
+        elem(Float.parse(Enum.at(command, 4)), 0),
+        hd(:sys.get_state(scene_builder_pid).transformation_stack),
+        :sys.get_state(scene_builder_pid).materials
       )
     )
   end
