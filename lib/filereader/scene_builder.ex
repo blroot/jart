@@ -1,7 +1,6 @@
 defmodule SceneBuilder do
   use GenServer
-  defstruct width: 640, height: 480, camera: 6000, filename: "default.png", maxdepth: 1, triangles: [], spheres: [], transformation_stack: [Graphmath.Mat44.identity()],
-  materials: %{diffuse: Color.create(), emission: Color.create(), shininess: 0.0, specular: Color.create(), ambient: Color.create()}
+  defstruct width: 640, height: 480, camera: 6000, filename: "default.png", maxdepth: 1, triangles: [], spheres: [], transformation_stack: [Graphmath.Mat44.identity()], materials: Materials.from()
 
   def init(scene) do
     {:ok, scene}

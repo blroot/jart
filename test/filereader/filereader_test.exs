@@ -84,13 +84,42 @@ defmodule JartTest.Filereader do
       "emission 1 0 0"
     ]
     assert Filereader.read(commands) == %SceneBuilder{
-      materials: %{
-        diffuse: Color.from(Graphmath.Vec3.create(0.0, 0.2, 0.0)),
-        ambient: Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
-        emission: Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
-        specular: Color.from(Graphmath.Vec3.create(0.0, 1.0, 0.0)),
-        shininess: 70.0
-      }
+      materials: Materials.from(
+        Color.from(Graphmath.Vec3.create(0.0, 0.2, 0.0)),
+        Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
+        70.0,
+        Color.from(Graphmath.Vec3.create(0.0, 1.0, 0.0)),
+        Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0))
+      )
     }
+  end
+
+  test "triangle has parsed materials" do
+    commands = [
+      "diffuse 0 0.2 0",
+      "specular 0 1 0",
+      "ambient 1 0 0",
+      "shininess 70",
+      "emission 1 0 0",
+      "vertex -1 -1 -1",
+      "vertex +1 -1 -1",
+      "vertex +1 -1 +1",
+      "tri 0 1 2",
+    ]
+    materials = Materials.from(
+      Color.from(Graphmath.Vec3.create(0.0, 0.2, 0.0)),
+      Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0)),
+      70.0,
+      Color.from(Graphmath.Vec3.create(0.0, 1.0, 0.0)),
+      Color.from(Graphmath.Vec3.create(1.0, 0.0, 0.0))
+    )
+    assert Filereader.read(commands).triangles == [
+        Primitives.Triangle.from(
+          Graphmath.Vec3.create(-1.0, -1.0, -1.0),
+          Graphmath.Vec3.create(1.0, -1.0, -1.0),
+          Graphmath.Vec3.create(1.0, -1.0, 1.0),
+          materials
+        )
+      ]
   end
 end

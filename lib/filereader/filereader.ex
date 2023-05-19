@@ -110,7 +110,8 @@ defmodule Filereader do
       scene_pid, Primitives.Triangle.from(
         VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 1))),
         VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 2))),
-        VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 3)))
+        VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 3))),
+        :sys.get_state(scene_pid).materials
       )
     )
   end

@@ -1,19 +1,11 @@
 defmodule Primitives.Triangle do
-  defstruct a: Graphmath.Vec3.create(), b: Graphmath.Vec3.create(), c: Graphmath.Vec3.create(), normal: Graphmath.Vec3.create(),
-  materials: %{diffuse: Color.create(), emission: Color.create(), shininess: 0.0, specular: Color.create(), ambient: Color.create()}
+  defstruct a: Graphmath.Vec3.create(), b: Graphmath.Vec3.create(), c: Graphmath.Vec3.create(), normal: Graphmath.Vec3.create(), materials: Materials.from()
 
-  @spec from({float, float, float}, {float, float, float}, {float, float, float}) ::
-          %Primitives.Triangle{
-            a: {float, float, float},
-            b: {float, float, float},
-            c: {float, float, float},
-            normal: {float, float, float}
-          }
-  def from(a, b, c) do
+  def from(a, b, c, materials \\ Materials.from()) do
     b_minus_a = Graphmath.Vec3.subtract(b, a)
     c_minus_a = Graphmath.Vec3.subtract(c, a)
     normal = Graphmath.Vec3.normalize(Graphmath.Vec3.cross(b_minus_a, c_minus_a))
-    %Primitives.Triangle{a: a, b: b, c: c, normal: normal }
+    %Primitives.Triangle{a: a, b: b, c: c, normal: normal, materials: materials }
   end
 
   @spec intersect(

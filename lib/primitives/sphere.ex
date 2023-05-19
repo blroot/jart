@@ -1,6 +1,5 @@
 defmodule Primitives.Sphere do
-  defstruct center: Graphmath.Vec3.create(), radius: 0.0, transform: Graphmath.Mat44.identity(), inverse_transform: Graphmath.Mat44.inverse(Graphmath.Mat44.identity()),
-  materials: %{diffuse: Color.create(), emission: Color.create(), shininess: 0.0, specular: Color.create(), ambient: Color.create()}
+  defstruct center: Graphmath.Vec3.create(), radius: 0.0, transform: Graphmath.Mat44.identity(), inverse_transform: Graphmath.Mat44.inverse(Graphmath.Mat44.identity()), materials: Materials.from()
 
   def from(center, radius, transform) do
     %Primitives.Sphere{
