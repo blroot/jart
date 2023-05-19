@@ -107,14 +107,14 @@ defmodule Filereader do
   end
 
   defp parse_triangle(vertex_buffer_pid, scene_pid, command) do
-    SceneBuilder.add_triangle(
-      scene_pid, Primitives.Triangle.from(
-        VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 1))),
-        VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 2))),
-        VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 3))),
-        :sys.get_state(scene_pid).materials
-      )
-    )
+  new_triangle = Primitives.Triangle.from(
+    VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 1))),
+    VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 2))),
+    VertexBuffer.get_vertex_at(vertex_buffer_pid, String.to_integer(Enum.at(command, 3))),
+    :sys.get_state(scene_pid).materials
+  )
+  new_triangle = Primitives.Triangle.apply_transform(new_triangle, hd(:sys.get_state(scene_pid).transformation_stack))
+  SceneBuilder.add_triangle(scene_pid, new_triangle)
   end
 
   defp parse_sphere(scene_builder_pid, command) do

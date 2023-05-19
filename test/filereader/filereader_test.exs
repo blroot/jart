@@ -148,4 +148,21 @@ defmodule JartTest.Filereader do
       )
     ]
   end
+
+  test "the triangles can be transformed" do
+    commands = [
+      "translate -0.4 0 0.5",
+      "vertex -1 -1 -1",
+      "vertex +1 -1 -1",
+      "vertex +1 -1 +1",
+      "tri 0 1 2",
+    ]
+    assert Filereader.read(commands).triangles == [
+      Primitives.Triangle.from(
+        Graphmath.Vec3.create(-1.4, -1.0, -0.5),
+        Graphmath.Vec3.create(0.6, -1.0, -0.5),
+        Graphmath.Vec3.create(0.6, -1.0, 1.5)
+      )
+    ]
+  end
 end

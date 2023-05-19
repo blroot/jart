@@ -81,6 +81,6 @@ defmodule Primitives.Triangle do
     c = Graphmath.Vec3.create(c_x, c_y, c_z)
     normal = Graphmath.Vec3.normalize(Graphmath.Vec3.cross(Graphmath.Vec3.subtract(b, a), Graphmath.Vec3.subtract(c, a)))
 
-    %Primitives.Triangle{a: a, b: b, c: c, normal: normal}
+    %Primitives.Triangle{triangle | a: a, b: b, c: c, normal: normal}
   end
 end
