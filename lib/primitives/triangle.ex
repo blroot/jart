@@ -47,28 +47,14 @@ defmodule Primitives.Triangle do
     alpha = ((dot11 * dot20) - (dot10 * dot21)) / ((dot00 * dot11) - (dot10 * dot10))
     beta = ((dot00 * dot21) - (dot10 * dot20)) / ((dot00 * dot11) - (dot10 * dot10))
 
-    cond do
+    intersection = cond do
       alpha >= 0.0 and alpha <= 1.0 and beta >= 0.0 and beta <= 1.0 and alpha + beta <= 1.0 -> t
       true -> intersection
     end
+
+    %{intersection: intersection, point: compute_point(ray, intersection), normal: triangle.normal}
   end
 
-  @spec apply_transform(
-          atom
-          | %{
-              :a => nil | maybe_improper_list | map,
-              :b => nil | maybe_improper_list | map,
-              :c => nil | maybe_improper_list | map,
-              optional(any) => any
-            },
-          {float, float, float, float, float, float, float, float, float, float, float, float,
-           float, float, float, float}
-        ) :: %Primitives.Triangle{
-          a: {float, float, float},
-          b: {float, float, float},
-          c: {float, float, float},
-          normal: {float, float, float}
-        }
   def apply_transform(triangle, transform) do
     { a_x, a_y, a_z } = triangle.a
     { a_x, a_y, a_z, _ } = Graphmath.Mat44.apply_left({ a_x, a_y, a_z, 1.0 }, transform)
@@ -82,5 +68,9 @@ defmodule Primitives.Triangle do
     normal = Graphmath.Vec3.normalize(Graphmath.Vec3.cross(Graphmath.Vec3.subtract(b, a), Graphmath.Vec3.subtract(c, a)))
 
     %Primitives.Triangle{triangle | a: a, b: b, c: c, normal: normal}
+  end
+
+  defp compute_point(ray, lambda) do
+    Graphmath.Vec3.add(ray.eye, Graphmath.Vec3.scale(ray.direction, lambda))
   end
 end

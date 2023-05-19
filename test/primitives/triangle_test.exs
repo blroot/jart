@@ -15,13 +15,21 @@ defmodule JartTest.Primitives.Triangle do
   test "a triangle intersects with a ray" do
     triangle = Primitives.Triangle.from(Graphmath.Vec3.create(0, 0, 0), Graphmath.Vec3.create(2, 0, 0), Graphmath.Vec3.create(0, 2, 0))
     ray = Primitives.Ray.from(Graphmath.Vec3.create(1, 1, -5), Graphmath.Vec3.create(0, 0, 1))
-    assert Primitives.Triangle.intersect(triangle, ray) > 0.0
+    assert Primitives.Triangle.intersect(triangle, ray) == %{
+      intersection: 5.0,
+      normal: Graphmath.Vec3.create(0.0, 0.0, 1.0),
+      point: Graphmath.Vec3.create(1.0, 1.0, 0.0)
+    }
   end
 
   test "a triangle does not intersects with a ray" do
     triangle = Primitives.Triangle.from(Graphmath.Vec3.create(0, 0, 0), Graphmath.Vec3.create(2, 0, 0), Graphmath.Vec3.create(0, 2, 0))
     ray = Primitives.Ray.from(Graphmath.Vec3.create(1, 1, 4), Graphmath.Vec3.create(0, 0, 1))
-    assert Primitives.Triangle.intersect(triangle, ray) < 0.0
+    assert Primitives.Triangle.intersect(triangle, ray) == %{
+      intersection: -4.0,
+      normal: Graphmath.Vec3.create(0.0, 0.0, 1.0),
+      point: Graphmath.Vec3.create(1.0, 1.0, 0.0)
+    }
   end
 
   test "a triangle stays the same if transformed by identity" do
