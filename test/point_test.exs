@@ -12,4 +12,9 @@ defmodule JartTest.Point do
       Graphmath.Vec3.create(1.0, 0.0, 0.0)
     )
   end
+
+  test "a point light can compute direction from an origin" do
+    point = Point.from(Graphmath.Vec3.create(), Color.from(Graphmath.Vec3.create(1.0, 1.0, 1.0)), Graphmath.Vec3.create(1.0, 0.0, 0.0), Graphmath.Vec3.create(1.0, 0.0, 0.0))
+    assert Point.compute_direction(point, Graphmath.Vec3.create(2.0, 2.0, -2.0)) == Graphmath.Vec3.create(-0.3333333333333333, -0.6666666666666666, 0.6666666666666666)
+  end
 end

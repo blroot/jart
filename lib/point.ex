@@ -11,4 +11,8 @@ defmodule Point do
 
     %Point{point | position: Graphmath.Vec3.create(pos_x, pos_y, pos_z)}
   end
+
+  def compute_direction(point, origin) do
+    Graphmath.Vec3.normalize(Graphmath.Vec3.subtract(point.direction, origin))
+  end
 end
