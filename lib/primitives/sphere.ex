@@ -15,7 +15,7 @@ defmodule Primitives.Sphere do
     %Primitives.Sphere{}
   end
 
-  def intersect(sphere, ray, transform) do
+  def intersect(sphere, ray) do
     { direction_x, direction_y, direction_z } = ray.direction
     { origin_x, origin_y, origin_z } = ray.eye
 
@@ -23,7 +23,7 @@ defmodule Primitives.Sphere do
     ray_direction = Graphmath.Vec3.normalize(Graphmath.Vec3.create(direction_x, direction_y, direction_z))
 
     { origin_x, origin_y, origin_z, _ } = Graphmath.Mat44.apply_left({origin_x, origin_y, origin_z, 1.0}, sphere.inverse_transform)
-    ray_origin = Graphmath.Vec3.normalize(Graphmath.Vec3.create(origin_x, origin_y, origin_z))
+    ray_origin = Graphmath.Vec3.create(origin_x, origin_y, origin_z)
 
     ray_origin_center = Graphmath.Vec3.subtract(ray_origin, sphere.center)
 
@@ -33,12 +33,12 @@ defmodule Primitives.Sphere do
     discriminant = b*b - 4*a*c
 
     cond do
-      discriminant >= 0.0 -> compute_roots(a, b, discriminant, ray_origin, ray_direction, ray.eye, transform)
-      true -> 0.0
+      discriminant >= 0.0 -> compute_roots(a, b, discriminant, ray_origin, ray_direction, ray.eye, sphere)
+      true -> %{intersection: 0.0, point: Graphmath.Vec3.create(), normal: Graphmath.Vec3.create()}
     end
   end
 
-  defp compute_roots(a, b, discriminant, ray_origin, ray_direction, ray_eye, transform) do
+  defp compute_roots(a, b, discriminant, ray_origin, ray_direction, ray_eye, sphere) do
     first_root = (-b + :math.sqrt(discriminant))/2*a
     second_root = (-b - :math.sqrt(discriminant))/2*a
 
@@ -51,8 +51,15 @@ defmodule Primitives.Sphere do
     end
 
     { point_x, point_y, point_z } = Graphmath.Vec3.add(ray_origin, Graphmath.Vec3.scale(ray_direction, intersection))
-    { point_x, point_y, point_z, _ } = Graphmath.Mat44.apply_left({point_x, point_y, point_z, 1.0}, transform)
+    { point_x, point_y, point_z, _ } = Graphmath.Mat44.apply_left({point_x, point_y, point_z, 1.0}, sphere.transform)
     intersection = Graphmath.Vec3.subtract(Graphmath.Vec3.create(point_x, point_y, point_z), ray_eye)
-    Graphmath.Vec3.length(intersection)
+    intersection = Graphmath.Vec3.length(intersection)
+
+    { normal_x, normal_y, normal_z, _ } = Graphmath.Mat44.apply_left({point_x, point_y, point_z, 1.0}, sphere.inverse_transform)
+    { normal_x, normal_y, normal_z } = Graphmath.Vec3.subtract(Graphmath.Vec3.create(normal_x, normal_y, normal_z), sphere.center)
+    { normal_x, normal_y, normal_z, _ } = Graphmath.Mat44.apply_left_transpose({normal_x, normal_y, normal_z, 0.0}, sphere.inverse_transform)
+    normal = Graphmath.Vec3.normalize(Graphmath.Vec3.create(normal_x, normal_y, normal_z))
+
+    %{intersection: intersection, point: Graphmath.Vec3.create(point_x, point_y, point_z), normal: normal}
   end
 end

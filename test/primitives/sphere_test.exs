@@ -25,15 +25,16 @@ defmodule JartTest.Primitives.Sphere do
 
   test "a sphere does not intersects with a ray" do
     transform = Graphmath.Mat44.identity()
-    ray = Primitives.Ray.from(Graphmath.Vec3.create(14, 15, 0), Graphmath.Vec3.create(0, 0, 1))
-    sphere = Primitives.Sphere.from(Graphmath.Vec3.create(0, 0, 0), 14, transform)
-    assert Primitives.Sphere.intersect(sphere, ray, transform) > 0.0
+    ray = Primitives.Ray.from(Graphmath.Vec3.create(25.0, 25.0, 0.0), Graphmath.Vec3.create(0, 0, 1))
+    sphere = Primitives.Sphere.from(Graphmath.Vec3.create(0.0, 0.0, 0.0), 2, transform)
+    assert Primitives.Sphere.intersect(sphere, ray).intersection == 0.0
+
   end
 
   test "a sphere intersects with a ray" do
     transform = Graphmath.Mat44.identity()
     ray = Primitives.Ray.from(Graphmath.Vec3.create(1, 1, 0), Graphmath.Vec3.create(0, 0, 1))
     sphere = Primitives.Sphere.from(Graphmath.Vec3.create(0, 0, 0), 14, transform)
-    assert Primitives.Sphere.intersect(sphere, ray, transform) > 0.0
+    assert round(Primitives.Sphere.intersect(sphere, ray).intersection) == 14
   end
 end

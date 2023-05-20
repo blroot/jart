@@ -8,22 +8,6 @@ defmodule Primitives.Triangle do
     %Primitives.Triangle{a: a, b: b, c: c, normal: normal, materials: materials }
   end
 
-  @spec intersect(
-          atom
-          | %{
-              :a => {float, float, float},
-              :b => {float, float, float},
-              :c => {float, float, float},
-              :normal => {float, float, float},
-              optional(any) => any
-            },
-          atom
-          | %{
-              :direction => {float, float, float},
-              :eye => {float, float, float},
-              optional(any) => any
-            }
-        ) :: float
   def intersect(triangle, ray) do
     intersection = 0.0
 
