@@ -15,4 +15,14 @@ defmodule Point do
   def compute_direction(point, origin) do
     Graphmath.Vec3.normalize(Graphmath.Vec3.subtract(point.direction, origin))
   end
+
+  def compute_attenuation(point, hitpoint) do
+    distance_to_light = compute_distance(point, hitpoint)
+    { attenuation_x, attenuation_y, attenuation_z } = point.attenuation
+    1.0/(attenuation_x + attenuation_y * distance_to_light + attenuation_z*(distance_to_light*distance_to_light))
+  end
+
+  defp compute_distance(point, hitpoint) do
+    Graphmath.Vec3.length(Graphmath.Vec3.subtract(point.position, hitpoint))
+  end
 end
