@@ -1,6 +1,6 @@
 defmodule SceneBuilder do
   use GenServer
-  defstruct width: 640, height: 480, camera: 6000, filename: "default.png", maxdepth: 1, triangles: [], spheres: [], transformation_stack: [Graphmath.Mat44.identity()], materials: Materials.from()
+  defstruct width: 640, height: 480, camera: 6000, filename: "default.png", maxdepth: 1, triangles: [], spheres: [], transformation_stack: [Graphmath.Mat44.identity()], materials: Materials.from(), points: [], directionals: []
 
   def init(scene) do
     {:ok, scene}
@@ -8,6 +8,14 @@ defmodule SceneBuilder do
 
   def add_triangle(pid, triangle) do
     GenServer.call(pid, {:add_triangle, triangle})
+  end
+
+  def add_point(pid, point) do
+    GenServer.call(pid, {:add_point, point})
+  end
+
+  def add_directional(pid, directional) do
+    GenServer.call(pid, {:add_directional, directional})
   end
 
   def add_sphere(pid, sphere) do
@@ -41,6 +49,16 @@ defmodule SceneBuilder do
   def handle_call({:add_triangle, triangle}, _from, state) do
     new_triangles = state.triangles ++ [triangle]
     {:reply, state, %{state | triangles: new_triangles}}
+  end
+
+  def handle_call({:add_point, point}, _from, state) do
+    new_points = state.points ++ [point]
+    {:reply, state, %{state | points: new_points}}
+  end
+
+  def handle_call({:add_directional, directional}, _from, state) do
+    new_directional = state.directionals ++ [directional]
+    {:reply, state, %{state | directionals: new_directional}}
   end
 
   def handle_call({:add_sphere, sphere}, _from, state) do

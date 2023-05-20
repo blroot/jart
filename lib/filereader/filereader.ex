@@ -24,10 +24,49 @@ defmodule Filereader do
         command_name == "specular" -> parse_color(scene_builder_pid, command, :specular)
         command_name == "shininess" -> parse_shininess(scene_builder_pid, command, :shininess)
         command_name == "sphere" -> parse_sphere(scene_builder_pid, command)
+        command_name == "point" -> parse_point(scene_builder_pid, command)
+        command_name == "directional" -> parse_directional(scene_builder_pid, command)
         true -> "Command not understood"
       end
     end
     :sys.get_state(scene_builder_pid)
+  end
+
+  defp parse_point(scene_builder_pid, command) do
+    point = Point.from(
+      Graphmath.Vec3.create(
+        elem(Float.parse(Enum.at(command, 1)), 0),
+        elem(Float.parse(Enum.at(command, 2)), 0),
+        elem(Float.parse(Enum.at(command, 3)), 0)
+      ),
+      Color.from(Graphmath.Vec3.create(
+        elem(Float.parse(Enum.at(command, 4)), 0),
+        elem(Float.parse(Enum.at(command, 5)), 0),
+        elem(Float.parse(Enum.at(command, 6)), 0)
+      )),
+      Graphmath.Vec3.create(),
+      Graphmath.Vec3.create(1.0, 0.0, 0.0)
+    )
+    point = Point.apply_transform(point, hd(:sys.get_state(scene_builder_pid).transformation_stack))
+    SceneBuilder.add_point(scene_builder_pid, point)
+  end
+
+  defp parse_directional(scene_builder_pid, command) do
+    directional = Directional.from(
+      Graphmath.Vec3.create(
+        elem(Float.parse(Enum.at(command, 1)), 0),
+        elem(Float.parse(Enum.at(command, 2)), 0),
+        elem(Float.parse(Enum.at(command, 3)), 0)
+      ),
+      Color.from(Graphmath.Vec3.create(
+        elem(Float.parse(Enum.at(command, 4)), 0),
+        elem(Float.parse(Enum.at(command, 5)), 0),
+        elem(Float.parse(Enum.at(command, 6)), 0)
+      )),
+      Graphmath.Vec3.create(),
+      Graphmath.Vec3.create(1.0, 0.0, 0.0)
+    )
+    SceneBuilder.add_directional(scene_builder_pid, directional)
   end
 
   defp parse_shininess(scene_builder_pid, command, material) do

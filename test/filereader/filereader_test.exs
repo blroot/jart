@@ -165,4 +165,42 @@ defmodule JartTest.Filereader do
       )
     ]
   end
+
+  test "lights can be parsed" do
+    commands = [
+      "point 1 1 3 1 1 1",
+      "directional 1 1 3 1 1 1",
+    ]
+    assert Filereader.read(commands).points == [
+      Point.from(
+        Graphmath.Vec3.create(1.0, 1.0, 3.0),
+        Color.from(Graphmath.Vec3.create(1.0, 1.0, 1.0)),
+        Graphmath.Vec3.create(),
+        Graphmath.Vec3.create(1.0, 0.0, 0.0)
+      )
+    ]
+    assert Filereader.read(commands).directionals == [
+      Directional.from(
+        Graphmath.Vec3.create(1.0, 1.0, 3.0),
+        Color.from(Graphmath.Vec3.create(1.0, 1.0, 1.0)),
+        Graphmath.Vec3.create(),
+        Graphmath.Vec3.create(1.0, 0.0, 0.0)
+      )
+    ]
+  end
+
+  test "directional lights can be transformed" do
+    commands = [
+      "translate -0.4 0 0.5",
+      "point 1 1 3 1 1 1"
+    ]
+    assert Filereader.read(commands).points == [
+      Point.from(
+        Graphmath.Vec3.create(0.6, 1.0, 3.5),
+        Color.from(Graphmath.Vec3.create(1.0, 1.0, 1.0)),
+        Graphmath.Vec3.create(),
+        Graphmath.Vec3.create(1.0, 0.0, 0.0)
+      )
+    ]
+  end
 end
